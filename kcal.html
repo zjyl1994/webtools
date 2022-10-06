@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>KCal calculator</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">KCal calculator</a></h1>
+    <hr>
+    <div x-data="{ gram: 100, kj:0, netgram:0 }">
+        <p>
+            <span>Energy (kJ)</span>
+            <span><input type="number" x-model="kj" name="ipt-kj"/></span>
+        </p>
+        <p>
+            <span>Part Weight</span>
+            <span><input type="number" x-model="gram" name="ipt-gram"/></span>
+        </p>
+        <hr>
+        <p>
+            <span>Full Weight</span>
+            <span><input type="number" x-model="netgram" name="ipt-netgram"/></span>
+        </p>
+        <p>
+            <span>Energy (KCal)</span>
+            <span><input type="number" x-model="Math.round(netgram/gram*kj*0.239006);" readonly></span>
+        </p>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+</body>
+</html>

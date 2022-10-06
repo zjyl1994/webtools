@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>Code7 calculator</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">Code7 calculator</a></h1>
+    <hr>
+    <div x-data="initCalc()">
+        <p>
+            <span>Code 3</span>
+            <span><input type="password" x-model="code3" /></span>
+        </p>
+        <p>
+            <span>Code 5</span>
+            <span><input type="text" x-model="code5" /></span>
+        </p>
+        <p>
+            <span>Code 7</span>
+            <div style="font-size:x-large" x-text="addspace(code7())"></div>
+        </p>
+        <button x-on:click="copyCode">Copy</button>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"
+        integrity="sha512-8pbzenDolL1l5OPSsoURCx9TEdMFTaeFipASVrMYKhuYtly+k3tcsQYliOEKTmuB1t7yuzAiVo+yd7SJz+ijFQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha1/0.6.0/sha1.min.js"
+        integrity="sha512-q6FuE4ifzTygTD/ug8CFnAFXl+i1zXqBWP6flRAuSWjaXrFu4Cznk8Xr+VrWMyi7fSatbssh7ufobAetvXK8Pg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function initCalc() {
+            return {
+                code3: '',
+                code5: '',
+                code7: function () {
+                    return uppercase(calc(this.code3, this.code5));
+                },
+                copyCode: function () {
+                    navigator.clipboard.writeText(this.code7()).then(() => {
+                        console.log('Async: Copying to clipboard was successful!');
+                    }, err => {
+                        console.error('Async: Could not copy text: ', err);
+                    });
+                }
+            }
+        }
+        function calc(code3, code5) {
+            return md5(code3 + code5 + sha1(code3 + code5)).substr(0, 16);
+        }
+        function uppercase(value) {
+            return value.substr(0, 4).toUpperCase() + value.substr(4, 4) + value.substr(8, 4).toUpperCase() + value.substr(12, 4);
+        }
+        function addspace(value) {
+            return value.substr(0, 4) + " - " + value.substr(4, 4) + " - " + value.substr(8, 4) + " - " + value.substr(12, 4);
+        }
+    </script>
+</body>
+
+</html>

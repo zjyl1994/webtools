@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>Latin OCR</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">Latin OCR</a></h1>
+    <hr>
+    <div x-data="data()" @paste.document="pasteHandler" @drop.document="dropHandler" @dragover.document="preventDefaults">
+        <img id="imgbox" style="background-color: #aaa;" :src="imageUrl">
+        <p>Progress: <span x-text="progessStatus"></span></p>
+        <p>Result:</p>
+        <pre><code x-text="outputResult"></code></pre>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/3.0.3/tesseract.min.js"
+        integrity="sha512-H1fQK9Bq3J9b57b8AphvKXga+undvNxdulY+WmE6RSD4fELdrU76CRfDoIuOtEIBw2swteNSAlwPEfAsqwv/qQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        function data() {
+            return {
+                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NTAgMzAwIiBjbGFzcz0iaW1nLWZsdWlkIHJvdW5kZWQgbXgtYXV0byBkLWJsb2NrIiB3aWR0aD0iNDUwIiBoZWlnaHQ9IjMwMCI+CiAgICAgICAgICAgICAgICAgICAgPHJlY3Qgd2lkdGg9IjQ1MCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNjY2NjY2MiPjwvcmVjdD4KICAgICAgICAgICAgICAgICAgICA8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyNnB4IiBmaWxsPSIjMzMzMzMzIj5Ecm9wIG9yIHBhc3RlIGltYWdlIGhlcmU8L3RleHQ+ICAgCiAgICAgICAgICAgICAgICA8L3N2Zz4KICAgICAgICAgICAgICAgIDwhLS08YSBkb3dubG9hZD0iRklMRU5BTUUucG5nIiBocmVmPSJkYXRhOmltYWdlL3BuZztiYXNlNjQsYXNkYXNkLi4uIj5Eb3dubG9hZDwvYT4tLT4=',
+                outputResult: '',
+                progessStatus: 'Ready.',
+                pasteHandler: function (event) {
+                    var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+                    if (items.length > 0) {
+                        var item = items[0];
+                        if (item.kind === 'file') {
+                            var blob = item.getAsFile();
+                            for (var index in items) {
+                                var item = items[index];
+                                if (item.kind === 'file') {
+                                    var blob = item.getAsFile();
+                                    this.recognize(blob);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                },
+                dropHandler: function (event) {
+                    var items = event.dataTransfer.files;
+                    if (items.length > 0) {
+                        this.recognize(items[0]);
+                    }
+                    this.preventDefaults(event);
+                },
+                preventDefaults: function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                },
+                recognize: function (file) {
+                    const reader = new FileReader();
+                    reader.addEventListener('load', (event) => {
+                        this.imageUrl = event.target.result;
+                        Tesseract.recognize(
+                            document.getElementById("imgbox"),
+                            'eng',
+                            { logger: m => this.progessStatus = m.status + ' ( ' + (m.progress * 100).toFixed(2) + '% )' }
+                        ).then(({ data: { text } }) => this.outputResult = text);
+                    });
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

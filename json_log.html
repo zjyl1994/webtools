@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>JSON Log</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">JSON Log</a></h1>
+    <hr>
+    <div x-data="initdata()">
+        <textarea x-model="inputData" rows="8" x-on:change.debounce="procLog($event)"></textarea>
+        <span>Field Name:<input x-model="fieldName" x-on:change.debounce="procLog($event)"></input></span>
+        <span>Filter Keyword:<input x-model="filterKeyword" x-on:change.debounce="procLog($event)"></input></span>
+        <p>Result</p>
+        <ul>
+            <template x-for="logentry in logEntrys">
+                <li x-text="logentry"></li>
+            </template>
+        </ul>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+    <script>
+        function initdata() {
+            return {
+                inputData: '',
+                fieldName: 'msg',
+                filterKeyword: '',
+                logEntrys: [],
+                procLog: function (event) {
+                    var entrys = this.inputData.split("\n");
+                    this.logEntrys = entrys.map(item => {
+                        try {
+                            var inputs = JSON.parse(item);
+                            return inputs[this.fieldName];
+                        } catch (e) {
+                            return e.toString();
+                        }
+                    });
+                    if (this.filterKeyword.length > 0) {
+                        var keywordList = this.filterKeyword.trim().split(/\s+/);
+                        if (keywordList.length > 0) {
+                            var logs = this.logEntrys.filter(item => item !== undefined);
+                            keywordList.forEach(element => {
+                                logs = logs.filter(str => str.toLowerCase().includes(element.toLowerCase()));
+                            });
+                            this.logEntrys = logs;
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

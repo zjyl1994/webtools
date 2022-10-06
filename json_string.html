@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>JSON strings</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">JSON strings</a></h1>
+    <hr>
+    <div x-data="initdata()">
+        <textarea x-model="inputdata" rows="8"></textarea>
+        <p>Result</p>
+        <pre><code x-text="outputresult()"></code></pre>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+    <script>
+        function initdata() {
+            return {
+                inputdata: '',
+                outputresult: function () {
+                    if (isJsonString(this.inputdata)) {
+                        var ret = JSON.parse(this.inputdata);
+                        if (isJson(ret)) {
+                            var ret = JSON.parse(ret);
+                            return JSON.stringify(ret, null, 4);
+                        } else {
+                            return ret;
+                        }
+                    } else {
+                        return JSON.stringify(this.inputdata);
+                    }
+                }
+            }
+        }
+        function isJsonString(item) {
+            try {
+                item = JSON.parse(item);
+                return typeof item === 'string';
+            } catch (e) {
+                return false;
+            }
+        }
+        function isJson(item) {
+            item = typeof item !== "string"
+                ? JSON.stringify(item)
+                : item;
+
+            try {
+                item = JSON.parse(item);
+            } catch (e) {
+                return false;
+            }
+
+            if (typeof item === "object" && item !== null) {
+                return true;
+            }
+
+            return false;
+        }
+    </script>
+</body>
+
+</html>
