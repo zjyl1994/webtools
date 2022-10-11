@@ -1,2 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
-html * {font-family: 'Ubuntu', sans-serif !important;max-width: 1200px;}
+html * {font-family: 'Ubuntu', monospace;max-width: 1200px;}
+.monospace {font-family: monospace;}
+.bigger-text{font-size: 1.25rem;}
