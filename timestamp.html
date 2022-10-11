@@ -36,7 +36,7 @@
     <script>
         function initdata() {
             return {
-                inputdata: '',
+                inputdata: Math.floor(Date.now() / 1000).toString(),
                 historylist: [],
                 outputresult: function () {
                     if (/^\d+$/.test(this.inputdata)) {
