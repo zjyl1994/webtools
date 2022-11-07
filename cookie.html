@@ -27,18 +27,33 @@
             <span>Value</span>
             <span><input type="text" x-model="cval" /></span>
         </p>
+        <p>
+            <span>Expire</span>
+            <span>
+                <select x-model="cexpire">
+                    <option value="3600">1 hour</option>
+                    <option value="7200">2 hour</option>
+                    <option value="28800">8 hour</option>
+                    <option value="86400">1 day</option>
+                    <option value="604800">7 days</option>
+                    <option value="2592000">30 days</option>
+                   
+                </select>
+            </span>
+        </p>
         <button x-on:click="setCookie">Set</button>
     </div>
     <hr>
     <a href="/">&lt;= Back</a>
     <script>
-        const cookie_suffix=';path=/;domain=zjyl1994.com;secure;max-age=2592000';
         function initApp() {
             return {
                 ckey: '',
                 cval: '',
+                cexpire: '3600',
                 setCookie: function () {
-                    var cookie_str = this.ckey+'='+encodeURIComponent(this.cval)+cookie_suffix;
+                    const cookie_const=';path=/;domain=zjyl1994.com;secure;max-age=';
+                    var cookie_str = this.ckey+'='+encodeURIComponent(this.cval)+cookie_const+this.cexpire;
                     console.log(cookie_str);
                     document.cookie = cookie_str;
                 }
