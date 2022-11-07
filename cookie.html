@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>Set Cookie</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">Set Cookie</a></h1>
+    <hr>
+    <div x-data="initApp()">
+        <p>
+            <span>Key</span>
+            <span><input type="text" x-model="ckey" /></span>
+        </p>
+        <p>
+            <span>Value</span>
+            <span><input type="text" x-model="cval" /></span>
+        </p>
+        <button x-on:click="setCookie">Set</button>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+    <script>
+        const cookie_suffix=';path=/;domain=zjyl1994.com;secure;max-age=2592000';
+        function initApp() {
+            return {
+                ckey: '',
+                cval: '',
+                setCookie: function () {
+                    var cookie_str = this.ckey+'='+encodeURIComponent(this.cval)+cookie_suffix;
+                    console.log(cookie_str);
+                    document.cookie = cookie_str;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
