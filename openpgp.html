@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <script defer src="https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js"></script>
+    <script defer src="https://unpkg.com/openpgp@5.5.0/dist/openpgp.min.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <title>OpenPGP Text</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <h1><a href="/">OpenPGP Text</a></h1>
+    <hr>
+    <div x-data="initdata()">
+        <textarea x-model="inputData" rows="8"></textarea>
+        <span>Password:<input x-model="password"></input></span>
+        <span>
+            <button @click="encrypt">Encrypt</button>
+            <button @click="decrypt">Decrypt</button>
+        </span>
+        <p>Result:</p>
+        <textarea x-model="outputData" rows="8" readonly></textarea>
+        <div x-text="errMsg"></div>
+    </div>
+    <hr>
+    <a href="/">&lt;= Back</a>
+    <script>
+        function initdata() {
+            return {
+                inputData:'',
+                password:'',
+                outputData:'',
+                errMsg:'',
+                encrypt: function(){
+                    openpgp.createMessage({text: this.inputData}).then(msg => {
+                        openpgp.encrypt({
+                            message: msg,
+                            passwords: this.password,
+                            format: 'armored'
+                        }).then(output => this.outputData = output)
+                        .catch(err => this.errMsg = err)
+                    }).catch(err => this.errMsg = err)
+                },
+                decrypt: function(){
+                    openpgp.readMessage({armoredMessage: this.inputData}).then(msg => {
+                        openpgp.decrypt({
+                            message: msg,
+                            passwords: this.password,
+                            format: 'text'
+                        }).then(output => {
+                            this.outputData = output.data}).catch(err => this.errMsg = err)
+                    }).catch(err => this.errMsg = err)
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
